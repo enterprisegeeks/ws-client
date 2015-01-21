@@ -61,7 +61,9 @@ public class WebSocketNotifierTray {
      */
     public static void main(String[] args) throws Exception {
         
-        String url = args.length == 0 ? "ws://localhost:8080/javaee_spike-web/pingpong" : args[0];
+        String defaultUrl = "ws://java-ee-example.herokuapp.com/java_ee_example/pingpong";
+        
+        String url = args.length == 0 ? defaultUrl : args[0];
         
         new WebSocketNotifierTray(url);
     }
