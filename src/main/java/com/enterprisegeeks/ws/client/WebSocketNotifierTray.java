@@ -14,6 +14,10 @@ import javax.websocket.WebSocketContainer;
  */
 public class WebSocketNotifierTray {
 
+    /**
+     * コンストラクタ 各種設定を行う
+     * @param url WS URL
+     */
     public WebSocketNotifierTray(String url) throws IOException, AWTException, 
             DeploymentException, URISyntaxException {
 
@@ -21,7 +25,6 @@ public class WebSocketNotifierTray {
         // イアイコン
         Image icon = ImageIO.read(getClass().getResourceAsStream("/icon.png"));
         final TrayIcon tray = new TrayIcon(icon);
-        
         
         // WebSocketクライアント
         final WSclient client = new WSclient(tray);
@@ -53,6 +56,8 @@ public class WebSocketNotifierTray {
 
     /** 
      * 起動 WebScoket接続URLはプログラム引数で与える
+     * 
+     * @param args 0は接続先のURL。無い場合デフォルト設定
      */
     public static void main(String[] args) throws Exception {
         

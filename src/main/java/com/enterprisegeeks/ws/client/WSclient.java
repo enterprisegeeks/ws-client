@@ -3,18 +3,12 @@ package com.enterprisegeeks.ws.client;
 import java.awt.TrayIcon;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.websocket.ClientEndpoint;
-import javax.websocket.ContainerProvider;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
 
 /**
  * WebSocket クライアント
@@ -28,6 +22,10 @@ public class WSclient  {
     /** WebSocketセッション */
     private Session mySession;
     
+    /**
+     * コンストラクタ
+     * @param tray サーバーからのイベント受信にて、メッセージ表示を行う
+     */
     public WSclient(TrayIcon tray) {
         this.tray = tray;
     }
