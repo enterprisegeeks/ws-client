@@ -2,6 +2,7 @@ package com.enterprisegeeks.ws.data;
 
 import java.io.StringReader;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
@@ -21,8 +22,10 @@ public class MessageDecoder implements Decoder.Text<Message>{
     @Override
     public Message decode(String s) throws DecodeException {
         JsonReader reader = Json.createReader(new StringReader(s));
-        String message = reader.readObject().getString("message");
-        return new Message(message);
+        JsonObject obj = reader.readObject();
+        String name = obj.getString("name");
+        String message = obj.getString("message");
+        return new Message(name, message);
     }
 
     @Override

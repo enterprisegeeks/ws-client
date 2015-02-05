@@ -72,7 +72,8 @@ public class WSclient  {
     public void onMessage(Message message, Session ses)  {
         System.out.println("recieved:" + message.message);
         // trayにメッセージを表示。
-        tray.displayMessage("受信", message.message, TrayIcon.MessageType.INFO);
+        tray.displayMessage("From [" + message.name +"]",
+                message.message, TrayIcon.MessageType.INFO);
     }
     
     @OnMessage

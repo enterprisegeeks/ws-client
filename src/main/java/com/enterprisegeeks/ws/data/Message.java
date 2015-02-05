@@ -9,9 +9,11 @@ package com.enterprisegeeks.ws.data;
  * 受信メッセージ
  */
 public class Message {
+    public final String name;
     public final String message;
     
-    public Message(String message) {
+    public Message(String name, String message) {
+        this.name = name;
         this.message = message;
     }
 }
