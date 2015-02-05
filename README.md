@@ -29,7 +29,7 @@ This run on System Tray and connect to WebSocket Server for message notification
 ## 概要
 
 WebScoketクライアントのJava SE上の実装サンプルです。
-このアプリケーションは、OSのシステムトレイで実行され、通知のためにWebSocketのサーバーと接続します。
+このアプリケーションは、OSのシステムトレイで実行され、通知メッセージを受け取るためにWebSocketのサーバーと接続します。
 
 ## 使用方法
 

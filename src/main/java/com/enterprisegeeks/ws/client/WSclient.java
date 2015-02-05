@@ -1,8 +1,18 @@
 package com.enterprisegeeks.ws.client;
 
+import com.enterprisegeeks.ws.data.Message;
+import com.enterprisegeeks.ws.data.MessageDecoder;
 import java.awt.TrayIcon;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.Iterator;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -13,7 +23,7 @@ import javax.websocket.Session;
 /**
  * WebSocket クライアント
  */
-@ClientEndpoint
+@ClientEndpoint(decoders = MessageDecoder.class)
 public class WSclient  {
 
     /** タスクトレイ */
@@ -59,10 +69,37 @@ public class WSclient  {
     }
     
     @OnMessage
-    public void onMessage(String message, Session ses)  {
-        System.out.println("recieved:" + message);
+    public void onMessage(Message message, Session ses)  {
+        System.out.println("recieved:" + message.message);
         // trayにメッセージを表示。
-        tray.displayMessage("受信", message, TrayIcon.MessageType.INFO);
+        tray.displayMessage("受信", message.message, TrayIcon.MessageType.INFO);
+    }
+    
+    @OnMessage
+    public void onBinary(ByteBuffer buf, Session ses)  {
+        System.out.println("recieved:binary");
+        // trayにメッセージを表示。
+        String home = System.getProperty("user.home");
+        File output = new File(home, System.currentTimeMillis()+"");
+        File result;
+        try(FileOutputStream os = new FileOutputStream(output);
+                FileChannel oc = os.getChannel()){
+            oc.write(buf);
+            result = addImageSuffix(output);
+        } catch(IOException e){
+            throw new RuntimeException(e);
+        }
+        output.renameTo(result);
+        tray.displayMessage("画像ファイルを受信", result.getAbsolutePath(), TrayIcon.MessageType.INFO);
+    }
+    
+    private File addImageSuffix(File file) throws IOException{
+       try(ImageInputStream iis = ImageIO.createImageInputStream(file)){
+           Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+           String suffix = readers.next().getOriginatingProvider().getFileSuffixes()[0];
+           File rename = new File(file.getAbsolutePath() + "." + suffix);
+           return rename;
+       }
     }
     
     @OnError

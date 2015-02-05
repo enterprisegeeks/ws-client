@@ -20,9 +20,8 @@ public class WebSocketNotifierTray {
      */
     public WebSocketNotifierTray(String url) throws IOException, AWTException, 
             DeploymentException, URISyntaxException {
-
         
-        // イアイコン
+        // アイコン
         Image icon = ImageIO.read(getClass().getResourceAsStream("/icon.png"));
         final TrayIcon tray = new TrayIcon(icon);
         
@@ -61,8 +60,8 @@ public class WebSocketNotifierTray {
      */
     public static void main(String[] args) throws Exception {
         
-        String defaultUrl = "ws://java-ee-example.herokuapp.com/java_ee_example/pingpong";
-        
+        String defaultUrl = "ws://java-ee-example.herokuapp.com/java_ee_example/websocket_sample";
+       
         String url = args.length == 0 ? defaultUrl : args[0];
         
         new WebSocketNotifierTray(url);
