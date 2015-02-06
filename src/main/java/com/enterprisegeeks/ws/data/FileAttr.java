@@ -6,15 +6,16 @@
 package com.enterprisegeeks.ws.data;
 
 /**
- * 送受信メッセージ
+ * ファイル情報
  */
-public class Message implements TextBase{
+public class FileAttr implements TextBase{
     public final String name;
-    public final String message;
+    public final String fileName;
+    public final String type;
     
-    
-    public Message(String name,String message) {
+    public FileAttr(String name,String fileName, String type) {
         this.name = name;
-        this.message = message;
+        this.fileName = fileName;
+        this.type = type;
     }
 }

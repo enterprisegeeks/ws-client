@@ -61,7 +61,7 @@ public class WebSocketNotifierTray {
     public static void main(String[] args) throws Exception {
         
         String defaultUrl = "ws://java-ee-example.herokuapp.com/java_ee_example/websocket_sample";
-       
+      
         String url = args.length == 0 ? defaultUrl : args[0];
         
         new WebSocketNotifierTray(url);

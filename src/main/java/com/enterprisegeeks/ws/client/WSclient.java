@@ -1,7 +1,9 @@
 package com.enterprisegeeks.ws.client;
 
+import com.enterprisegeeks.ws.data.Decoders;
+import com.enterprisegeeks.ws.data.FileAttr;
 import com.enterprisegeeks.ws.data.Message;
-import com.enterprisegeeks.ws.data.MessageDecoder;
+import com.enterprisegeeks.ws.data.TextBase;
 import java.awt.TrayIcon;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +25,7 @@ import javax.websocket.Session;
 /**
  * WebSocket クライアント
  */
-@ClientEndpoint(decoders = MessageDecoder.class)
+@ClientEndpoint(decoders = {Decoders.MessageDecoder.class, Decoders.FileAttrDecoder.class})
 public class WSclient  {
 
     /** タスクトレイ */
@@ -31,6 +33,9 @@ public class WSclient  {
     
     /** WebSocketセッション */
     private Session mySession;
+    
+    /** 受信ファイル */
+    private FileAttr file;
     
     /**
      * コンストラクタ
@@ -63,12 +68,22 @@ public class WSclient  {
     // 以下は、サーバーからの通知受信のためのコールバック
     
     @OnOpen
-    public void open(Session session) {
+    public void open(Session session) throws IOException{
         System.out.println(session.getId() + " was opened.");
         mySession = session;
+        // クライアントからメッセージを1度でも送っておかないと受信できない場合がある。
+        session.getBasicRemote().sendPing(null);
     }
     
     @OnMessage
+    public void onMessage(TextBase text, Session ses)  {
+        if (text instanceof Message) {
+            onMessage((Message)text, ses);
+        } else {
+            this.file = (FileAttr)text;
+        }
+    }
+    
     public void onMessage(Message message, Session ses)  {
         System.out.println("recieved:" + message.message);
         // trayにメッセージを表示。
@@ -81,26 +96,15 @@ public class WSclient  {
         System.out.println("recieved:binary");
         // trayにメッセージを表示。
         String home = System.getProperty("user.home");
-        File output = new File(home, System.currentTimeMillis()+"");
-        File result;
+        File output = new File(home, file.fileName);
         try(FileOutputStream os = new FileOutputStream(output);
                 FileChannel oc = os.getChannel()){
             oc.write(buf);
-            result = addImageSuffix(output);
         } catch(IOException e){
             throw new RuntimeException(e);
         }
-        output.renameTo(result);
-        tray.displayMessage("画像ファイルを受信", result.getAbsolutePath(), TrayIcon.MessageType.INFO);
-    }
-    
-    private File addImageSuffix(File file) throws IOException{
-       try(ImageInputStream iis = ImageIO.createImageInputStream(file)){
-           Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
-           String suffix = readers.next().getOriginatingProvider().getFileSuffixes()[0];
-           File rename = new File(file.getAbsolutePath() + "." + suffix);
-           return rename;
-       }
+        tray.displayMessage("画像ファイルを受信 from[" + file.name +"]",
+                output.getAbsolutePath(), TrayIcon.MessageType.INFO);
     }
     
     @OnError
