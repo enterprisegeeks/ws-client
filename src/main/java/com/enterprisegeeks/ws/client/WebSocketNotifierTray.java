@@ -10,7 +10,7 @@ import javax.websocket.DeploymentException;
 import javax.websocket.WebSocketContainer;
 
 /**
- * WebScoketからの通知を受け取るタスクトレイ
+ * WebSocketからの通知を受け取るタスクトレイ
  */
 public class WebSocketNotifierTray {
 
@@ -54,7 +54,7 @@ public class WebSocketNotifierTray {
     }
 
     /** 
-     * 起動 WebScoket接続URLはプログラム引数で与える
+     * 起動 WebSocket接続URLはプログラム引数で与える
      * 
      * @param args 0は接続先のURL。無い場合デフォルト設定
      */
